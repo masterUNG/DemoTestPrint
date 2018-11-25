@@ -26,6 +26,7 @@ public class MainFragment extends Fragment {
     private boolean aBoolean = false;
     private boolean communicationABoolean = true;   //true ==> Can Print, false ==> Disable Print
     private Button button, printAgainButton;
+    private int anInt = 0;
 
     public MainFragment() {
         // Required empty public constructor
@@ -77,15 +78,28 @@ public class MainFragment extends Fragment {
 
                             if (communicationABoolean) {
 
+                                anInt += 1;
+
                                 String printString = "MasterUNG";
+                                String line2String = "Thailand";
+                                printString = printString + " " + Integer.toString(anInt);
                                 Log.d("24novV3", "You Click Test Print ==> " + printString);
 
-                                byte[] bytes = new byte[]{0x10, 0x04, 0x04};
+
+
+                                byte[] bytes = new byte[]{0x10, 0x04, 0x04};    // Space Front Bill
                                 wifiCommunication.sndByte(bytes);
                                 wifiCommunication.sendMsg(printString, "gbk");
 
-                                byte[] bytes1 = new byte[]{0x0A, 0x0D};
+
+                                byte[] bytes1 = new byte[]{0x0A, 0x0D}; // Update Line
                                 wifiCommunication.sndByte(bytes1);
+
+//                                Line2
+                                wifiCommunication.sndByte(bytes);
+                                wifiCommunication.sendMsg(line2String, "gbk");
+                                wifiCommunication.sndByte(bytes1);
+
 
                                 wifiCommunication.close();
 
