@@ -56,7 +56,7 @@ public class MainFragment extends Fragment {
 
     private void createCommuicationPrinter() {
         wifiCommunication = new WifiCommunication(handler);
-        wifiCommunication.initSocket("192.168.1.87", 9100);
+        wifiCommunication.initSocket("192.168.1.88", 9100);
     }
 
     private Handler handler = new Handler() {
@@ -80,25 +80,69 @@ public class MainFragment extends Fragment {
 
                                 anInt += 1;
 
-                                String printString = "MasterUNG";
+                                String printSring = "ABC";
                                 String line2String = "Thailand";
-                                printString = printString + " " + Integer.toString(anInt);
-                                Log.d("24novV3", "You Click Test Print ==> " + printString);
+                                printSring = printSring + " " + Integer.toString(anInt);
+                                Log.d("24novV3", "You Click Test Print" + printSring);
 
 
-
-                                byte[] bytes = new byte[]{0x10, 0x04, 0x04};    // Space Front Bill
+                                byte[] bytes = new byte[]{0x10, 0x04, 0x04}; // Space Front Bill
+                                //byte[] bytes = new byte[]{0x1B, 0x4A, 40}; // Space Front Bill n*0.125 mm
                                 wifiCommunication.sndByte(bytes);
-                                wifiCommunication.sendMsg(printString, "gbk");
-
+                                wifiCommunication.sendMsg(printSring, "gbk");
 
                                 byte[] bytes1 = new byte[]{0x0A, 0x0D}; // Update Line
                                 wifiCommunication.sndByte(bytes1);
 
-//                                Line2
+                                //-----Start Joyce-----
+
+
+                                byte[] centered = new byte[]{0x1B, 0x61, 1}; // centered
+                                wifiCommunication.sndByte(centered);
+                                wifiCommunication.sendMsg("จัดกลาง centered", "tis-620");
+                                wifiCommunication.sndByte(bytes1); // Update Line
+
+                                byte[] left = new byte[]{0x1B, 0x61, 0}; // left
+                                wifiCommunication.sndByte(left);
+                                wifiCommunication.sendMsg("left", "gbk");
+                                wifiCommunication.sndByte(bytes1); // Update Line
+
+                                byte[] right = new byte[]{0x1B, 0x61, 2}; // right
+                                wifiCommunication.sndByte(right);
+                                wifiCommunication.sendMsg("right", "gbk");
+                                wifiCommunication.sndByte(bytes1); // Update Line
+
+                                byte[] cmd =  new  byte [ 3 ]; // Set the font (double height and width bold)
+                                cmd[0] = 0x1B;
+                                cmd[1] = 0x21;
+                                cmd[2] |= 0x08; // 08 04 bold
+                                cmd[2] |= 0x05; // 10 08 height
+                                cmd[2] |= 0x20; // 20 10
+                                wifiCommunication.sndByte(cmd); // Set the font (double height and width bold)
+                                wifiCommunication.sendMsg("bold", "gbk");
+                                wifiCommunication.sndByte(bytes1); // Update Line
+
+                                byte[] dfont = new byte[]{0x1B, 0x21, 0x00}; // default font
+                                wifiCommunication.sndByte(dfont);
+                                wifiCommunication.sendMsg("dfont", "gbk");
+                                wifiCommunication.sndByte(bytes1); // Update Line
+
+                                //-----End Joyce-----
+
+//                                    Line2
                                 wifiCommunication.sndByte(bytes);
                                 wifiCommunication.sendMsg(line2String, "gbk");
                                 wifiCommunication.sndByte(bytes1);
+
+                                //-----Start Joyce-----
+
+                                byte[] openCashDrawer = new byte[]{0x1B, 0x70, 0x00, 0x40, 0x50}; // Open Cash Drawer
+                                wifiCommunication.sndByte(openCashDrawer);
+
+//                                byte[] cutterPaper = new byte[]{0x1D, 0x56, 0x42, 90}; // Cutter Paper command
+//                                wifiCommunication.sndByte(cutterPaper);
+
+                                //-----End Joyce-----
 
 
                                 wifiCommunication.close();
@@ -106,11 +150,12 @@ public class MainFragment extends Fragment {
                                 communicationABoolean = false;
 
                             } else {
+
+                                //Log.d("24novV3", "Communication Disible");
                                 Toast.makeText(getActivity(), "Disable Printer Please Press Click Again", Toast.LENGTH_SHORT).show();
                             }
 
-                        }   // onClick
-
+                        } // onClick
                     });
 
                     break;
